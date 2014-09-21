@@ -1,6 +1,6 @@
 module ActiveRecord
   module ConnectionAdapters
-    module PostgreSQL
+    module PostGIS
       module OID
 
         class Geometry < Type::Value

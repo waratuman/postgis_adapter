@@ -1,4 +1,4 @@
-# ActiveRecord PostgreSQLAdapter PostGIS Extension
+# ActiveRecord PostGIS Database Adapter
 
 This gem extends the PostgreSQLAdapter to support GIS objects for a PostGIS
 database. The RGeo library is used for GIS objects in Ruby.

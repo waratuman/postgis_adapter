@@ -2,12 +2,12 @@ lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
-  spec.name          = "postgresql-postgis-extension"
+  spec.name          = "postgis_adapter"
   spec.version       = '0.0.1'
   spec.authors       = ["James R. Bracy"]
   spec.email         = ["waratuman@gmail.com"]
-  spec.description   = %q{ActiveRecord PostgreSQLAdapter extensions for PostGIS}
-  spec.summary       = %q{ActiveRecord PostgreSQLAdapter extensions for PostGIS}
+  spec.description   = %q{ActiveRecord PostGIS Database Adapter}
+  spec.summary       = %q{ActiveRecord PostGIS Database Adapter}
   spec.homepage      = ""
   spec.license       = "MIT"
 
