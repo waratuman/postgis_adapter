@@ -19,4 +19,6 @@ module ActiveRecord
   end
 end
 
-ActiveRecord::SchemaDumper.ignore_tables |= %w[geometry_columns spatial_ref_sys layer topology]
+ActiveSupport.on_load(:active_record) do
+  ActiveRecord::SchemaDumper.ignore_tables |= %w[geometry_columns spatial_ref_sys layer topology]
+end
