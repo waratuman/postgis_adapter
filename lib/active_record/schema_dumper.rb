@@ -1,3 +1,5 @@
+require 'active_record/schema_dumper'
+
 module ActiveRecord
   class SchemaDumper
   

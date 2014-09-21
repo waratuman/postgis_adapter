@@ -1,10 +1,11 @@
+require 'active_record/connection_adapters/postgresql_adapter'
+
 require_relative './postgresql/oid/geometry'
 require_relative './postgresql/column_methods'
 require_relative './postgresql/table_definition'
 
 module ActiveRecord
   module ConnectionAdapters
-
     class PostgreSQLAdapter < AbstractAdapter
 
       NATIVE_DATABASE_TYPES.merge!({
