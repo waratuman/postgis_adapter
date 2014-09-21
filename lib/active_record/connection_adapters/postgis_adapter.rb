@@ -63,7 +63,7 @@ module ActiveRecord
       # PostgreSQL Array quoting; This should be moved to MLS, has nothing to do
       # with this extension, but support for contains and overlaps nodes in Arel
       def quote_array(value)
-        type = PostGIS::OID::Array.new("ActiveRecord::Type::#{value[0].class}".constantize.new)
+        type = PostgreSQL::OID::Array.new("ActiveRecord::Type::#{value[0].class}".constantize.new)
         type.type_cast_for_database(value)
       end
 
