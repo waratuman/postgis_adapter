@@ -7,6 +7,14 @@ require 'active_record/connection_adapters/postgis/table_definition'
 ActiveRecord::SchemaDumper.ignore_tables |= %w[geometry_columns spatial_ref_sys layer topology]
 module ActiveRecord
 
+  module Tasks
+    autoload :PostGISDatabaseTasks,  'active_record/tasks/postgis_database_tasks'
+
+    module DatabaseTasks
+      register_task(/postgis/,       ActiveRecord::Tasks::PostGISDatabaseTasks)
+    end
+  end
+
   class SchemaDumper
 
     # TODO: Extract extension schema, ci to Rails core (See other todo for other methods to related to this)
@@ -112,5 +120,6 @@ module ActiveRecord
     end
 
   end
+
 end
 
