@@ -1,19 +1,12 @@
 require 'active_record/connection_adapters/postgresql_adapter'
 
 require 'active_record/connection_adapters/postgis/oid/geometry'
-require 'active_record/connection_adapters/postgis/column_methods'
-require 'active_record/connection_adapters/postgis/table_definition'
+# require 'active_record/connection_adapters/postgis/column_methods'
+# require 'active_record/connection_adapters/postgis/table_definition'
+require 'active_record/connection_adapters/postgis/schema_definitions'
 
 ActiveRecord::SchemaDumper.ignore_tables |= %w[geometry_columns spatial_ref_sys layer topology]
 module ActiveRecord
-
-  module Tasks
-    autoload :PostGISDatabaseTasks,  'active_record/tasks/postgis_database_tasks'
-
-    module DatabaseTasks
-      register_task(/postgis/,       ActiveRecord::Tasks::PostGISDatabaseTasks)
-    end
-  end
 
   class SchemaDumper
 
@@ -115,6 +108,12 @@ module ActiveRecord
         else
           super
         end
+      end
+
+      private
+      
+      def create_table_definition(name, temporary, options, as = nil) # :nodoc:
+        PostGIS::TableDefinition.new native_database_types, name, temporary, options, as
       end
 
     end
