@@ -67,6 +67,7 @@ module ActiveRecord
         register_class_with_limit m, 'geometry', PostGIS::OID::Geometry
         initialize_type_map_without_postgis(m)
       end
+      # TODO: Remove alias_method_chain, not needed since we are no inheriting from PostgreSQL
       alias_method_chain :initialize_type_map, :postgis
 
       def extract_limit_with_postgis(sql_type)
@@ -76,6 +77,7 @@ module ActiveRecord
           extract_limit_without_postgis(sql_type)
         end
       end
+      # TODO: Remove alias_method_chain, not needed since we are no inheriting from PostgreSQL
       alias_method_chain :extract_limit, :postgis
 
       def type_to_sql_with_postgis(type, limit = nil, precision = nil, scale = nil)
@@ -86,6 +88,7 @@ module ActiveRecord
           type_to_sql_without_postgis(type, limit, precision, scale)
         end
       end
+      # TODO: Remove alias_method_chain, not needed since we are no inheriting from PostgreSQL
       alias_method_chain :type_to_sql, :postgis
 
       # TODO: Extract extension schema, ci to Rails core (See other todo for other methods to related to this)
