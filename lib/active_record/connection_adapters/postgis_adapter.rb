@@ -1,8 +1,6 @@
 require 'active_record/connection_adapters/postgresql_adapter'
 
 require 'active_record/connection_adapters/postgis/oid/geometry'
-# require 'active_record/connection_adapters/postgis/column_methods'
-# require 'active_record/connection_adapters/postgis/table_definition'
 require 'active_record/connection_adapters/postgis/schema_definitions'
 
 ActiveRecord::SchemaDumper.ignore_tables |= %w[geometry_columns spatial_ref_sys layer topology]
@@ -46,12 +44,13 @@ module ActiveRecord
       # so just pass a nil connection object for the time being.
       ConnectionAdapters::PostGISAdapter.new(nil, logger, conn_params, config)
     end
+
   end
 
   module ConnectionAdapters
     class PostGISAdapter < PostgreSQLAdapter
 
-      NATIVE_DATABASE_TYPES.merge!({
+      NATIVE_DATABASE_TYPES = PostgreSQLAdapter::NATIVE_DATABASE_TYPES.merge!({
         geometry: {name: 'geometry'},
       })
 
@@ -63,33 +62,27 @@ module ActiveRecord
         type.type_cast_for_database(value)
       end
 
-      def initialize_type_map_with_postgis(m)
+      def initialize_type_map(m)
         register_class_with_limit m, 'geometry', PostGIS::OID::Geometry
-        initialize_type_map_without_postgis(m)
+        super
       end
-      # TODO: Remove alias_method_chain, not needed since we are no inheriting from PostgreSQL
-      alias_method_chain :initialize_type_map, :postgis
 
-      def extract_limit_with_postgis(sql_type)
+      def extract_limit(sql_type)
         if sql_type =~ /geometry\(([a-zA-Z]*),(\d+)\)/i
           { :type => $1, :srid => $2 }
         else
-          extract_limit_without_postgis(sql_type)
+          super
         end
       end
-      # TODO: Remove alias_method_chain, not needed since we are no inheriting from PostgreSQL
-      alias_method_chain :extract_limit, :postgis
 
-      def type_to_sql_with_postgis(type, limit = nil, precision = nil, scale = nil)
+      def type_to_sql(type, limit = nil, precision = nil, scale = nil)
         case type.to_s
         when 'geometry'
           limit ? "geometry(#{limit[:type]},#{limit[:srid]})" : 'geometry'
         else
-          type_to_sql_without_postgis(type, limit, precision, scale)
+          super
         end
       end
-      # TODO: Remove alias_method_chain, not needed since we are no inheriting from PostgreSQL
-      alias_method_chain :type_to_sql, :postgis
 
       # TODO: Extract extension schema, ci to Rails core (See other todo for other methods to related to this)
       def enable_extension(name, opts={})

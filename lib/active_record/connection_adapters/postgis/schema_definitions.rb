@@ -14,8 +14,8 @@ module ActiveRecord
       class ColumnDefinition < ActiveRecord::ConnectionAdapters::PostgreSQL::ColumnDefinition
       end
 
-      class TableDefinition < ActiveRecord::ConnectionAdapters::TableDefinition
-        include ColumnMethods
+      class TableDefinition < ActiveRecord::ConnectionAdapters::PostgreSQL::TableDefinition
+        include PostGIS::ColumnMethods
 
         private
 
