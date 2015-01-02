@@ -1,7 +1,7 @@
 require 'active_record/connection_adapters/postgresql_adapter'
-
 require 'active_record/connection_adapters/postgis/oid/geometry'
 require 'active_record/connection_adapters/postgis/schema_definitions'
+require 'active_record/connection_adapters/postgis/attribute'
 
 ActiveRecord::SchemaDumper.ignore_tables |= %w[geometry_columns spatial_ref_sys layer topology]
 module ActiveRecord
