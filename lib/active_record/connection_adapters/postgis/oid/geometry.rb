@@ -34,6 +34,10 @@ module ActiveRecord
             end
           end
 
+          def changed_in_place?(raw_old_value, new_value)
+            type_cast(raw_old_value) != new_value
+          end
+
           private
           
           def rgeo_factory_generator
