@@ -5,26 +5,6 @@ require 'active_record/connection_adapters/postgis/attribute'
 
 ActiveRecord::SchemaDumper.ignore_tables |= %w[geometry_columns spatial_ref_sys layer topology]
 module ActiveRecord
-
-  class SchemaDumper
-
-    # TODO: Extract extension schema, ci to Rails core (See other todo for other methods to related to this)
-    def extensions(stream)
-      return unless @connection.supports_extensions?
-      extensions = @connection.extensions
-      if extensions.any?
-        stream.puts "  # These are extensions that must be enabled in order to support this database"
-        extensions.each do |extension|
-          line = "  enable_extension #{extension[:name].inspect}"
-          line << ", schema: #{extension[:schema].inspect}" if extension[:schema] && extension[:schema] != 'public'
-          stream.puts line
-        end
-        stream.puts
-      end
-    end
-
-  end
-
   module ConnectionHandling # :nodoc:
 
     # Establishes a connection to the database that's used by all Active Record objects
@@ -82,14 +62,14 @@ module ActiveRecord
         end
       end
 
-      # def type_to_sql(type, limit = nil, precision = nil, scale = nil)
-      #   case type.to_s
-      #   when 'geometry'
-      #     limit ? "geometry(#{limit[:type]},#{limit[:srid]})" : 'geometry'
-      #   else
-      #     super
-      #   end
-      # end
+      def type_to_sql(type, limit = nil, precision = nil, scale = nil, array = nil)
+        case type.to_s
+        when 'geometry'
+          limit ? "geometry(#{limit[:type]},#{limit[:srid]})" : 'geometry'
+        else
+          super
+        end
+      end
 
       private
 
