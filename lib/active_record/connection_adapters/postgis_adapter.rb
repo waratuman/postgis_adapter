@@ -5,6 +5,27 @@ require 'active_record/connection_adapters/postgis/attribute'
 
 ActiveRecord::SchemaDumper.ignore_tables |= %w[geometry_columns spatial_ref_sys layer topology]
 module ActiveRecord
+  class SchemaDumper
+
+    private
+
+    def extensions(stream)
+      byebug
+      return unless @connection.supports_extensions?
+      extensions = @connection.extensions
+      if extensions.any?
+        stream.puts "  # These are extensions that must be enabled in order to support this database"
+        extensions.each do |extension|
+          line = "  enable_extension #{extension[:name].inspect}"
+          line << ", schema: #{extension[:schema].inspect}" if extension[:schema] && extension[:schema] != 'public'
+          stream.puts line
+        end
+        stream.puts
+      end
+    end
+    
+  end
+
   module ConnectionHandling # :nodoc:
 
     # Establishes a connection to the database that's used by all Active Record objects
@@ -71,6 +92,32 @@ module ActiveRecord
         end
       end
 
+      # TODO: Rails Core
+      # Update PostgreSQL to support schema extensions
+      def extensions
+        if supports_extensions?
+          extensions = exec_query(<<-SQL, "SCHEMA").cast_values
+            SELECT extname, nspname
+            FROM pg_extension
+            INNER JOIN pg_namespace ON pg_extension.extnamespace = pg_namespace.oid
+            WHERE nspname != 'pg_catalog'
+          SQL
+          extensions.map { |x| { name: x[0], schema: x[1]} }
+        else
+          super
+        end
+      end
+
+      def enable_extension(name, opts={})
+        query = "CREATE EXTENSION IF NOT EXISTS \"#{name}\""		
+        if opts[:schema]		
+          exec_query("CREATE SCHEMA IF NOT EXISTS \"#{opts[:schema]}\"")		
+          query << " SCHEMA \"#{opts[:schema]}\""
+        end
+        exec_query(query).tap { reload_type_map }
+      end
+      # END Rails Core
+
       private
 
       def create_table_definition(name, temporary = false, options = nil, as = nil) # :nodoc:
@@ -79,8 +126,5 @@ module ActiveRecord
 
       # ActiveRecord::Type.register(:geometry, OID::Geometry, adapter: :postgis)
     end
-
   end
-
 end
-
