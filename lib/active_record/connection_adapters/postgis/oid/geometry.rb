@@ -4,13 +4,13 @@ module ActiveRecord
       module OID
 
         class Geometry < Type::Value
-          include Type::Mutable
+          include ActiveModel::Type::Helpers::Mutable
         
           def type
             :geometry
           end
 
-          def type_cast(value)
+          def cast(value)
             case value
             when nil
               nil
@@ -25,7 +25,7 @@ module ActiveRecord
             end
           end
 
-          def type_cast_for_database(value)
+          def serialize(value)
             case value
             when  RGeo::Feature::Instance
               ::RGeo::WKRep::WKBGenerator.new(hex_format: true, type_format: :ewkb, emit_ewkb_srid: true).generate(value)
@@ -35,7 +35,7 @@ module ActiveRecord
           end
 
           def changed_in_place?(raw_old_value, new_value)
-            type_cast(raw_old_value) != new_value
+            cast(raw_old_value) != new_value
           end
 
           private

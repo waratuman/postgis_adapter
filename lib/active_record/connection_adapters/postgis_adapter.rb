@@ -38,7 +38,8 @@ module ActiveRecord
       conn_params[:dbname] = conn_params.delete(:database) if conn_params[:database]
 
       # Forward only valid config params to PGconn.connect.
-      conn_params.keep_if { |k, _| VALID_CONN_PARAMS.include?(k) }
+      valid_conn_param_keys = PGconn.conndefaults_hash.keys + [:requiressl]
+      conn_params.slice!(*valid_conn_param_keys)
 
       # The postgres drivers don't allow the creation of an unconnected PGconn object,
       # so just pass a nil connection object for the time being.
@@ -49,25 +50,27 @@ module ActiveRecord
 
   module ConnectionAdapters
     class PostGISAdapter < PostgreSQLAdapter
+      ADAPTER_NAME = 'PostGIS'.freeze
 
       NATIVE_DATABASE_TYPES = PostgreSQLAdapter::NATIVE_DATABASE_TYPES.merge!({
         geometry: {name: 'geometry'},
       })
 
-      # TODO: Extract method to MLS
-      # PostgreSQL Array quoting; This should be moved to MLS, has nothing to do
-      # with this extension, but support for contains and overlaps nodes in Arel
-      def quote_array(value)
-        type = if !value[0]
-          PostgreSQL::OID::Array.new(nil)
-        else
-          PostgreSQL::OID::Array.new("ActiveRecord::Type::#{value[0].class}".constantize.new)
-        end
-        type.type_cast_for_database(value)
-      end
+      # # TODO: Extract method to MLS
+      # # PostgreSQL Array quoting; This should be moved to MLS, has nothing to do
+      # # with this extension, but support for contains and overlaps nodes in Arel
+      # def quote_array(value)
+      #   type = if !value[0]
+      #     PostgreSQL::OID::Array.new(nil)
+      #   else
+      #     PostgreSQL::OID::Array.new("ActiveRecord::Type::#{value[0].class}".constantize.new)
+      #   end
+      #   type.type_cast_for_database(value)
+      # end
 
       def initialize_type_map(m)
         register_class_with_limit m, 'geometry', PostGIS::OID::Geometry
+        # m.register_type 'geometry', OID::Geometry
         super
       end
 
@@ -79,36 +82,14 @@ module ActiveRecord
         end
       end
 
-      def type_to_sql(type, limit = nil, precision = nil, scale = nil)
-        case type.to_s
-        when 'geometry'
-          limit ? "geometry(#{limit[:type]},#{limit[:srid]})" : 'geometry'
-        else
-          super
-        end
-      end
-
-      # TODO: Extract extension schema, ci to Rails core (See other todo for other methods to related to this)
-      def enable_extension(name, opts={})
-        query = "CREATE EXTENSION IF NOT EXISTS \"#{name}\""
-        if opts[:schema]
-          exec_query("CREATE SCHEMA IF NOT EXISTS \"#{opts[:schema]}\"")
-          query << " SCHEMA \"#{opts[:schema]}\"" 
-        end
-        exec_query(query).tap {
-          reload_type_map
-        }
-      end
-
-      # TODO: Extract extension schema, ci to Rails core (See other todo for other methods to related to this)
-      def extensions
-        if supports_extensions?
-          extensions = exec_query("SELECT extname, nspname FROM pg_extension INNER JOIN pg_namespace ON pg_extension.extnamespace = pg_namespace.oid WHERE nspname != 'pg_catalog'", "SCHEMA").cast_values
-          extensions.map { |x| { name: x[0], schema: x[1]} }
-        else
-          super
-        end
-      end
+      # def type_to_sql(type, limit = nil, precision = nil, scale = nil)
+      #   case type.to_s
+      #   when 'geometry'
+      #     limit ? "geometry(#{limit[:type]},#{limit[:srid]})" : 'geometry'
+      #   else
+      #     super
+      #   end
+      # end
 
       private
       
@@ -116,6 +97,7 @@ module ActiveRecord
         PostGIS::TableDefinition.new native_database_types, name, temporary, options, as
       end
 
+      # ActiveRecord::Type.register(:geometry, OID::Geometry, adapter: :postgis)
     end
 
   end
