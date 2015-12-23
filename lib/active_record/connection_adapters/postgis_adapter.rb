@@ -10,7 +10,6 @@ module ActiveRecord
     private
 
     def extensions(stream)
-      byebug
       return unless @connection.supports_extensions?
       extensions = @connection.extensions
       if extensions.any?
