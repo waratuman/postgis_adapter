@@ -119,8 +119,8 @@ module ActiveRecord
 
       private
 
-      def create_table_definition(name, temporary = false, options = nil, as = nil) # :nodoc:
-        PostGIS::TableDefinition.new(name, temporary, options, as)
+      def create_table_definition(*args) # :nodoc:
+        PostGIS::TableDefinition.new(*args)
       end
 
       # ActiveRecord::Type.register(:geometry, OID::Geometry, adapter: :postgis)
