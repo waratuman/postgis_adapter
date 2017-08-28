@@ -5,26 +5,6 @@ require 'active_record/connection_adapters/postgis/attribute'
 
 ActiveRecord::SchemaDumper.ignore_tables |= %w[geometry_columns spatial_ref_sys layer topology]
 module ActiveRecord
-  class SchemaDumper
-
-    private
-
-    def extensions(stream)
-      return unless @connection.supports_extensions?
-      extensions = @connection.extensions
-      if extensions.any?
-        stream.puts "  # These are extensions that must be enabled in order to support this database"
-        extensions.each do |extension|
-          line = "  enable_extension #{extension[:name].inspect}"
-          line << ", schema: #{extension[:schema].inspect}" if extension[:schema] && extension[:schema] != 'public'
-          stream.puts line
-        end
-        stream.puts
-      end
-    end
-    
-  end
-
   module ConnectionHandling # :nodoc:
 
     # Establishes a connection to the database that's used by all Active Record objects
@@ -38,7 +18,7 @@ module ActiveRecord
       conn_params[:dbname] = conn_params.delete(:database) if conn_params[:database]
 
       # Forward only valid config params to PGconn.connect.
-      valid_conn_param_keys = PGconn.conndefaults_hash.keys + [:requiressl]
+      valid_conn_param_keys = PG::Connection.conndefaults_hash.keys + [:requiressl]
       conn_params.slice!(*valid_conn_param_keys)
 
       # The postgres drivers don't allow the creation of an unconnected PGconn object,
@@ -82,7 +62,7 @@ module ActiveRecord
         end
       end
 
-      def type_to_sql(type, limit = nil, precision = nil, scale = nil, array = nil)
+      def type_to_sql(type, limit: nil, precision: nil, scale: nil, **)
         case type.to_s
         when 'geometry'
           limit ? "geometry(#{limit[:type]},#{limit[:srid]})" : 'geometry'
@@ -91,39 +71,12 @@ module ActiveRecord
         end
       end
 
-      # TODO: Rails Core
-      # Update PostgreSQL to support schema extensions
-      def extensions
-        if supports_extensions?
-          extensions = exec_query(<<-SQL, "SCHEMA").cast_values
-            SELECT extname, nspname
-            FROM pg_extension
-            INNER JOIN pg_namespace ON pg_extension.extnamespace = pg_namespace.oid
-            WHERE nspname != 'pg_catalog'
-          SQL
-          extensions.map { |x| { name: x[0], schema: x[1]} }
-        else
-          super
-        end
-      end
-
-      def enable_extension(name, opts={})
-        query = "CREATE EXTENSION IF NOT EXISTS \"#{name}\""		
-        if opts[:schema]		
-          exec_query("CREATE SCHEMA IF NOT EXISTS \"#{opts[:schema]}\"")		
-          query << " SCHEMA \"#{opts[:schema]}\""
-        end
-        exec_query(query).tap { reload_type_map }
-      end
-      # END Rails Core
-
       private
 
       def create_table_definition(*args) # :nodoc:
         PostGIS::TableDefinition.new(*args)
       end
 
-      # ActiveRecord::Type.register(:geometry, OID::Geometry, adapter: :postgis)
     end
   end
 end
