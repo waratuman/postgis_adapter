@@ -48,7 +48,7 @@ module ActiveRecord
       #   type.type_cast_for_database(value)
       # end
 
-      def initialize_type_map(m)
+      def initialize_type_map(m = type_map)
         register_class_with_limit m, 'geometry', PostGIS::OID::Geometry
         # m.register_type 'geometry', OID::Geometry
         super
