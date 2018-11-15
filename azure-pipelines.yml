@@ -13,8 +13,8 @@ steps:
     addToPath: true
 
 - script: |
-    apt-get install postgresql postgresql-contrib
-  displayName: 'apt-get install postgresql'
+    sudo apt-get install postgresql postgresql-contrib
+  displayName: 'sudo apt-get install postgresql'
 
 - script: |
     gem install bundler
