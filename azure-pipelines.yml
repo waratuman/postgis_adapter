@@ -10,6 +10,11 @@ steps:
 - task: UseRubyVersion@0
   inputs:
     versionSpec: '>= 2.5'
+    addToPath: true
+
+- script: |
+    apt-get install postgresql postgresql-contrib
+  displayName: 'apt-get install postgresql'
 
 - script: |
     gem install bundler
