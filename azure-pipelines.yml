@@ -13,12 +13,12 @@ steps:
     addToPath: true
 
 - script: |
-    sudo apt-get install postgresql postgresql-contrib
-  displayName: 'sudo apt-get install postgresql'
+    sudo apt-get install postgresql postgresql-contrib libpq-dev --quiet
+  displayName: 'sudo apt-get install'
 
 - script: |
-    gem install bundler
-    bundle install --retry=3 --jobs=4
+    gem install bundler --quiet
+    bundle install --retry=3 --jobs=4 --quiet
   displayName: 'bundle install'
 
 - script: bundle exec rake test
