@@ -62,10 +62,10 @@ module ActiveRecord
         end
       end
 
-      def type_to_sql(type, limit: nil, precision: nil, scale: nil, **)
-        case type.to_s
+      def type_to_sql(sql_type, type: 'Geometry', srid: 4326, **)
+        case sql_type.to_s
         when 'geometry'
-          limit ? "geometry(#{limit[:type]},#{limit[:srid]})" : 'geometry'
+          "geometry(#{type},#{srid})"
         else
           super
         end
