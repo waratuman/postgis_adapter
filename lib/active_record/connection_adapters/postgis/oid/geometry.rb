@@ -14,7 +14,7 @@ module ActiveRecord
             case value
             when nil
               nil
-            when RGeo::Geos::CAPIPointImpl
+            when RGeo::Geos::CAPIGeometryMethods
               value
             when ::String # HEXEWKB
               if value[0,1] == "\x00" || value[0,1] == "\x01" || value[0,4] =~ /[0-9a-fA-F]{4}/
