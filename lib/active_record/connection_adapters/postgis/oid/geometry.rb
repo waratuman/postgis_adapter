@@ -1,3 +1,5 @@
+require 'rgeo'
+
 module ActiveRecord
   module ConnectionAdapters
     module PostGIS
