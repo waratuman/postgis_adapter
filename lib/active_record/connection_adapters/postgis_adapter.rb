@@ -17,13 +17,18 @@ module ActiveRecord
       conn_params[:user] = conn_params.delete(:username) if conn_params[:username]
       conn_params[:dbname] = conn_params.delete(:database) if conn_params[:database]
 
-      # Forward only valid config params to PGconn.connect.
+      # Forward only valid config params to PG::Connection.connect.
       valid_conn_param_keys = PG::Connection.conndefaults_hash.keys + [:requiressl]
       conn_params.slice!(*valid_conn_param_keys)
 
-      # The postgres drivers don't allow the creation of an unconnected PGconn object,
-      # so just pass a nil connection object for the time being.
-      ConnectionAdapters::PostGISAdapter.new(nil, logger, conn_params, config)
+      conn = PG.connect(conn_params)
+      ConnectionAdapters::PostgreSQLAdapter.new(conn, logger, conn_params, config)
+    rescue ::PG::Error => error
+      if error.message.include?("does not exist")
+        raise ActiveRecord::NoDatabaseError
+      else
+        raise
+      end
     end
 
   end
@@ -33,7 +38,7 @@ module ActiveRecord
       ADAPTER_NAME = 'PostGIS'.freeze
 
       NATIVE_DATABASE_TYPES = PostgreSQLAdapter::NATIVE_DATABASE_TYPES.merge!({
-        geometry: {name: 'geometry'},
+        geometry: { name: "geometry" },
       })
 
       # # TODO: Extract method to MLS
@@ -50,7 +55,6 @@ module ActiveRecord
 
       def initialize_type_map(m = type_map)
         register_class_with_limit m, 'geometry', PostGIS::OID::Geometry
-        # m.register_type 'geometry', OID::Geometry
         super
       end
 

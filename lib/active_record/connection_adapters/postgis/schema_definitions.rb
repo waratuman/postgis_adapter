@@ -3,7 +3,6 @@ module ActiveRecord
     module PostGIS
 
       module ColumnMethods
-        include PostgreSQL::ColumnMethods
 
         def geometry(*args, **options)
           args.each { |name| column(name, :geometry, options) }
