@@ -12,6 +12,7 @@ module ActiveRecord
 
       class TableDefinition < ActiveRecord::ConnectionAdapters::PostgreSQL::TableDefinition
         include PostGIS::ColumnMethods
+
       end
 
     end
