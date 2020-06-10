@@ -7,7 +7,7 @@ module ActiveRecord
 
         class Geometry < Type::Value
           include ActiveModel::Type::Helpers::Mutable
-        
+
           def type
             :geometry
           end
@@ -43,7 +43,7 @@ module ActiveRecord
           end
 
           private
-          
+
           def rgeo_factory_generator
             RGeo::Geos.factory_generator(:srid => limit[:srid].to_i)
           end

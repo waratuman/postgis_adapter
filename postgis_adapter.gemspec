@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = "postgis_adapter"
-  spec.version       = '6.0.0.3'
+  spec.version       = '6.0.0.4'
   spec.authors       = ["James Bracy"]
   spec.email         = ["waratuman@gmail.com"]
   spec.description   = %q{ActiveRecord PostGIS Database Adapter}

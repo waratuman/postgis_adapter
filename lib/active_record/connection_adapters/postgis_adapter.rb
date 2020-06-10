@@ -45,7 +45,7 @@ module ActiveRecord
       include PostGIS::SchemaStatements
 
       def initialize_type_map(m = type_map)
-        register_class_with_limit m, /geometry/i, PostGIS::OID::Geometry
+        register_class_with_limit m, "geometry", PostGIS::OID::Geometry
         super
       end
 

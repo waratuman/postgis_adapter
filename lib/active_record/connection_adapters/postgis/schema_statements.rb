@@ -12,9 +12,9 @@ module ActiveRecord
             super
           end
         end
-  
+
         private
-  
+
         def create_table_definition(*args)
           PostGIS::TableDefinition.new(self, *args)
         end
