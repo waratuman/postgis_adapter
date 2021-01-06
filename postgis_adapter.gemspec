@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'pg', '~> 1.1'
   spec.add_runtime_dependency 'activerecord', '>= 6.1.0'
-  spec.add_runtime_dependency 'rgeo', '~> 2.1.1'
+  spec.add_runtime_dependency 'rgeo', '~> 2.1'
 
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'rake'
