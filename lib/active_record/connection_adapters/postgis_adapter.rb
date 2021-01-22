@@ -57,6 +57,14 @@ module ActiveRecord
         end
       end
 
+      ActiveRecord::Type.send(:registry).send(:registrations).select do |registration|
+        registration.send(:matches_adapter?, adapter: :postgresql)
+      end.each do |registration|
+        r = registration.dup
+        r.instance_variable_set(:@adapter, :postgis)
+        ActiveRecord::Type.send(:registry).send(:registrations) << r
+      end
+
     end
   end
 end
