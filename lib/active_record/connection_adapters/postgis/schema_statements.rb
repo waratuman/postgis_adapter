@@ -15,8 +15,8 @@ module ActiveRecord
 
         private
 
-        def create_table_definition(*args)
-          PostGIS::TableDefinition.new(self, *args)
+        def create_table_definition(name, **options)
+          PostGIS::TableDefinition.new(self, name, **options)
         end
 
       end

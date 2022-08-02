@@ -1,3 +1,4 @@
+require "debug"
 require "active_record"
 require "postgis_adapter"
 

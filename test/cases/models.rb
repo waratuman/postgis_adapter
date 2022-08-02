@@ -6,7 +6,7 @@ class CreateModelTables < ActiveRecord::Migration[6.0]
   def self.up
     enable_extension :postgis
 
-    create_table :geos do |t|
+    create_table :geos, if_not_exists: true do |t|
       t.geometry :point, limit: { type: 'Point', srid: 4326 }
       t.geometry :linestring, limit: { type: 'LineString', srid: 4326 }
       t.geometry :polygon, limit: { type: 'Polygon', srid: 4326 }
@@ -16,5 +16,7 @@ class CreateModelTables < ActiveRecord::Migration[6.0]
   end
 
 end
+
 ActiveRecord::Migration.verbose = false
-CreateModelTables.run
+
+ActiveRecord::Migration.run(CreateModelTables)
