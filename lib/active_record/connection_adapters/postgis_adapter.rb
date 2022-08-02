@@ -43,16 +43,18 @@ module ActiveRecord
 
       include PostGIS::SchemaStatements
 
-      def initialize_type_map(m = type_map)
-        register_class_with_limit m, "geometry", PostGIS::OID::Geometry
-        super
-      end
-
-      def extract_limit(sql_type)
-        if sql_type =~ /geometry\(([a-zA-Z]*),(\d+)\)/i
-          { :type => $1, :srid => $2 }
-        else
+      class << self
+        def initialize_type_map(m)
+          register_class_with_limit m, "geometry", PostGIS::OID::Geometry
           super
+        end
+
+        def extract_limit(sql_type)
+          if sql_type =~ /geometry\(([a-zA-Z]*),(\d+)\)/i
+            { :type => $1, :srid => $2 }
+          else
+            super
+          end
         end
       end
 

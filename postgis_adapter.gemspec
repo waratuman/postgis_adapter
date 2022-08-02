@@ -3,7 +3,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = "postgis_adapter"
-  spec.version       = '6.1.0.0'
+  spec.version       = '7.0.0.1'
   spec.authors       = ["James Bracy"]
   spec.email         = ["waratuman@gmail.com"]
   spec.description   = %q{ActiveRecord PostGIS Database Adapter}
@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency 'pg', '~> 1.1'
-  spec.add_runtime_dependency 'activerecord', '>= 6.1.0'
+  spec.add_runtime_dependency 'activerecord', '>= 7.0'
   spec.add_runtime_dependency 'rgeo', '~> 2.1'
 
   spec.add_development_dependency 'bundler'
