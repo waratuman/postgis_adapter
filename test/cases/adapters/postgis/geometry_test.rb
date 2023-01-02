@@ -33,4 +33,18 @@ class PostGISGeometry < ActiveSupport::TestCase # ActiveRecord::PostGISTestCase
     assert_equal "GEOMETRYCOLLECTION (POINT (2.0 0.0), POLYGON ((0.0 0.0, 1.0 0.0, 1.0 1.0, 0.0 1.0, 0.0 0.0)))", geo.collection.as_text
   end
 
+  def test_json
+    geo = Geo.create(point: '{"type":"Point","coordinates":[1,2]}')
+    assert geo.point.is_a?(RGeo::Geos::CAPIPointImpl)
+    assert_equal 1, geo.point.x
+    assert_equal 2, geo.point.y
+  end
+
+  def test_json_as_ruby_hash
+    geo = Geo.create(point: { type: "Point", coordinates: [1,2] })
+    assert geo.point.is_a?(RGeo::Geos::CAPIPointImpl)
+    assert_equal 1, geo.point.x
+    assert_equal 2, geo.point.y
+  end
+
 end
