@@ -1,7 +1,9 @@
 require 'active_record/connection_adapters/postgresql_adapter'
+require 'active_record/connection_adapters/postgis/version'
 require 'active_record/connection_adapters/postgis/oid/geometry'
 require 'active_record/connection_adapters/postgis/schema_definitions'
 require 'active_record/connection_adapters/postgis/schema_statements'
+require 'active_record/connection_adapters/postgis/database_statements'
 
 ActiveRecord::SchemaDumper.ignore_tables |= %w[geometry_columns spatial_ref_sys layer topology]
 module ActiveRecord
@@ -42,6 +44,7 @@ module ActiveRecord
       })
 
       include PostGIS::SchemaStatements
+      include PostGIS::DatabaseStatements
 
       class << self
         def initialize_type_map(m)
