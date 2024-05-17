@@ -1,9 +1,8 @@
-lib = File.expand_path('../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require_relative "lib/active_record/connection_adapters/postgis/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "postgis_adapter"
-  spec.version       = '7.0.0.1'
+  spec.version       = ActiveRecord::ConnectionAdapters::PostGIS::VERSION
   spec.authors       = ["James Bracy"]
   spec.email         = ["waratuman@gmail.com"]
   spec.description   = %q{ActiveRecord PostGIS Database Adapter}
