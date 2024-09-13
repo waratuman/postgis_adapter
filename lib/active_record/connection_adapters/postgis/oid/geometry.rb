@@ -45,7 +45,7 @@ module ActiveRecord
           private
 
           def rgeo_factory_generator
-            RGeo::Geos.factory_generator(:srid => limit[:srid].to_i)
+            RGeo::Geos.factory(srid: limit[:srid].to_i)
           end
 
         end
