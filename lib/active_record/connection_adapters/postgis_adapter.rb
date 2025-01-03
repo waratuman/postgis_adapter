@@ -1,3 +1,4 @@
+require 'active_record'
 require 'active_record/connection_adapters/postgresql_adapter'
 require 'active_record/connection_adapters/postgis/version'
 require 'active_record/connection_adapters/postgis/oid/geometry'
