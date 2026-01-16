@@ -4,9 +4,16 @@ module ActiveRecord
       module SchemaStatements
         include PostgreSQL::SchemaStatements
 
-        def type_to_sql(sql_type, limit: nil, precision: nil, scale: nil, array: nil, type: 'Geometry', srid: 4326, **) # :nodoc:
+        def type_to_sql(sql_type, limit: nil, precision: nil, scale: nil, array: nil, type: nil, srid: nil, **) # :nodoc:
           case sql_type.to_s
           when 'geometry'
+            if limit.is_a?(Hash)
+              type ||= limit[:type] || 'Geometry'
+              srid ||= limit[:srid] || 4326
+            else
+              type ||= 'Geometry'
+              srid ||= 4326
+            end
             "geometry(#{type},#{srid})"
           else
             super
