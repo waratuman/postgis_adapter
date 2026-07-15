@@ -36,7 +36,7 @@ jobs:
         ruby: ['3.2', '3.3', '3.4']
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       # rgeo's CAPI extension links against GEOS at build time, so libgeos-dev
       # must be present before `bundle install` compiles the native extension.
