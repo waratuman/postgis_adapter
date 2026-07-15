@@ -14,7 +14,7 @@ module ActiveRecord
               type ||= 'Geometry'
               srid ||= 4326
             end
-            "geometry(#{type},#{srid})"
+            "geometry(#{type},#{srid.to_i})"
           else
             super
           end

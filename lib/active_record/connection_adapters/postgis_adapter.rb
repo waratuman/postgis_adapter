@@ -12,7 +12,7 @@ module ActiveRecord
     class PostGISAdapter < PostgreSQLAdapter
       ADAPTER_NAME = 'PostGIS'.freeze
 
-      NATIVE_DATABASE_TYPES = PostgreSQLAdapter::NATIVE_DATABASE_TYPES.merge!({
+      NATIVE_DATABASE_TYPES = PostgreSQLAdapter::NATIVE_DATABASE_TYPES.merge({
         geometry: { name: "geometry" },
       })
 
