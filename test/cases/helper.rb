@@ -3,7 +3,8 @@ require "active_record"
 require "postgis_adapter"
 
 require "active_support"
-require "active_support/testing/autorun"
+require "active_support/test_case"
+require "minitest/autorun"
 
 ActiveRecord::Base.logger = ActiveSupport::Logger.new("debug.log", 0, 100 * 1024 * 1024)
 ActiveRecord::Base.configurations = ActiveRecord::DatabaseConfigurations.new({
