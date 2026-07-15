@@ -27,7 +27,7 @@ class PostGISGeometry < ActiveSupport::TestCase # ActiveRecord::PostGISTestCase
     assert_equal "POLYGON ((0 0, 10 0, 10 10, 0 10, 0 0), (1 1, 1 2, 2 2, 2 1, 1 1))", geo.polygon_with_hole.as_text
   end
 
-  def test_polygon_with_hole
+  def test_collection
     geo = Geo.create(collection: 'GEOMETRYCOLLECTION(POINT(2 0),POLYGON((0 0, 1 0, 1 1, 0 1, 0 0)))')
     assert geo.collection.is_a?(RGeo::Geos::CAPIGeometryCollectionImpl)
     assert_equal "GEOMETRYCOLLECTION (POINT (2 0), POLYGON ((0 0, 1 0, 1 1, 0 1, 0 0)))", geo.collection.as_text
