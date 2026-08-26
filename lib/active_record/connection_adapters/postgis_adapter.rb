@@ -12,14 +12,22 @@ module ActiveRecord
     class PostGISAdapter < PostgreSQLAdapter
       ADAPTER_NAME = 'PostGIS'.freeze
 
-      NATIVE_DATABASE_TYPES = PostgreSQLAdapter::NATIVE_DATABASE_TYPES.merge({
+      POSTGIS_NATIVE_DATABASE_TYPES = {
         geometry: { name: "geometry" },
-      })
+      }.freeze
+
+      NATIVE_DATABASE_TYPES = PostgreSQLAdapter::NATIVE_DATABASE_TYPES.merge(POSTGIS_NATIVE_DATABASE_TYPES)
 
       include PostGIS::SchemaStatements
       include PostGIS::DatabaseStatements
 
       class << self
+        # PostgreSQLAdapter.native_database_types resolves NATIVE_DATABASE_TYPES
+        # lexically, so shadowing the constant in this subclass has no effect.
+        def native_database_types # :nodoc:
+          @native_database_types ||= super.merge(POSTGIS_NATIVE_DATABASE_TYPES)
+        end
+
         def initialize_type_map(m)
           register_class_with_limit m, "geometry", PostGIS::OID::Geometry
           super
@@ -27,7 +35,7 @@ module ActiveRecord
 
         def extract_limit(sql_type)
           if sql_type =~ /geometry\(([a-zA-Z]*),(\d+)\)/i
-            { :type => $1, :srid => $2 }
+            { :type => $1, :srid => $2.to_i }
           else
             super
           end
