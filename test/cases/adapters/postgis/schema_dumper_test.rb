@@ -17,7 +17,8 @@ class PostGISSchemaDumper < ActiveSupport::TestCase
     dump = dump_schema
 
     refute_match(/Could not dump table/, dump)
-    assert_match(/t\.geometry\s+"point",\s+limit: \{.*type: "Point".*srid: 4326.*\}/, dump)
+    # Ruby < 3.4 inspects hashes as {:type=>"Point"}, 3.4+ as {type: "Point"}.
+    assert_match(/t\.geometry\s+"point",\s+limit: \{[^}]*"Point"[^}]*4326[^}]*\}/, dump)
   end
 
   def test_dumps_srid_as_an_integer
