@@ -29,11 +29,15 @@ jobs:
       PGPORT: 5432
       PGUSER: postgres
       PGPASSWORD: postgres
+      RAILS_VERSION: ${{ matrix.rails }}
 
     strategy:
       fail-fast: false
       matrix:
         ruby: ['3.2', '3.3', '3.4']
+        rails: ['8.0', '8.1']
+
+    name: test (ruby ${{ matrix.ruby }}, rails ${{ matrix.rails }})
 
     steps:
       - uses: actions/checkout@v5
