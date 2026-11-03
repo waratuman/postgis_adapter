@@ -34,7 +34,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: ['3.2', '3.3', '3.4']
+        ruby: ['3.3', '3.4', '4.0']
         rails: ['8.0', '8.1']
 
     name: test (ruby ${{ matrix.ruby }}, rails ${{ matrix.rails }})
