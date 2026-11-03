@@ -6,6 +6,7 @@
 - Fix crash on geometry columns without a limit
 - Coerce the SRID to an integer when generating the `geometry()` column type
 - Stop adding `:geometry` to the parent PostgreSQLAdapter's native database types
+- Require Ruby 3.3 or newer
 - Add GitHub Actions CI testing Ruby 3.3, 3.4 and 4.0 against Rails 8.0 and 8.1
 
 # Version 6.0.0.1
