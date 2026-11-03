@@ -55,6 +55,28 @@ module ActiveRecord
             cast(raw_old_value) != new_value
           end
 
+          # The RGeo parsers hold Procs and Mutexes, which neither YAML nor
+          # Marshal can load back. Serialize only the column options (e.g. for
+          # the schema cache) and rebuild the RGeo objects when loading.
+          def encode_with(coder)
+            coder["precision"] = precision
+            coder["scale"] = scale
+            coder["limit"] = limit
+          end
+
+          def init_with(coder)
+            initialize(precision: coder["precision"], scale: coder["scale"], limit: coder["limit"])
+          end
+
+          def marshal_dump
+            [precision, scale, limit]
+          end
+
+          def marshal_load(data)
+            precision, scale, limit = data
+            initialize(precision: precision, scale: scale, limit: limit)
+          end
+
           private
 
           def srid
